@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Epic Button Game</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type ="text/javascript">
+        $(document).ready(function(){
+            //this triggers the connection event in our server
+            var socket = io.connect();
+
+            //this event will emit to the server when somebody pushes the Button
+            $('#push').click(function(){
+                socket.emit('push_button', {action: 'Someone pushed a button'});
+            });
+
+            //this event will emit to the server to reset the counter to 0
+
+            $('#reset').click(function(){
+                socket.emit('reset_counter', {action: 'Counter reset to 0'});
+            });
+
+            //This event is triggered by every button clicked and displays the amount of times its been clicked.
+
+            socket.on('push_counter', function(data){
+                $('#message').html('Somebody pushed my gottam buttons this many times: ' + JSON.stringify(data.response));
+            });
+
+            socket.on('reset', function(data){
+                $('#message').html('oh yea, you reset it');
+            });
+        })
+    </script>
+</head>
+<body>
+    <center>
+        <%# Notice that the two responses share the id "message" so they can be represented in the same area of the page. %>
+        <h2 id="message"></h2>
+        <h3>Use the button to push ze count up yah</h3>
+        <button id='push'>Push my button, pa push it real good</button>
+        <button id='reset'>No more pushes, reset it</button>
+    </center>
+</body>
+</html>
